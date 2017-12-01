@@ -17,6 +17,10 @@ def index():
 def graphs():
 	return render_template('./graphs.js')
 
+@app.route('/loading.js')
+def loading():
+	return render_template('./loading.js')
+
 @app.route('/data/production/live')
 def data_production_live():
 	global datamgr
@@ -27,6 +31,11 @@ def data_consumption_live():
 	global datamgr
 	return jsonify(datamgr.get_consumption_W())
 
-if __name__ == '__main__':
+@app.route('/data/latest_live_data')
+def latest_live_data():
+	global datamgr
+	return jsonify(datamgr.get_latest_live_data())
 
-	app.run(host="0.0.0.0", port=3000, debug=True)
+if __name__ == '__main__':
+	app.run(host="0.0.0.0", port=3000, debug=False)
+	

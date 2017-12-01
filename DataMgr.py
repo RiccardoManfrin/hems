@@ -8,8 +8,8 @@ from threading import Timer
 def now():
 	return datetime.datetime.now()
 
-def dtepoch(dt):
-	return int(time.mktime(dt.timetuple()))
+def dtepoch_ms(dt):
+	return int(time.mktime(dt.timetuple())) * 1000 + dt.microsecond / 1000
 
 class DataMgr:
 	"""Data Manager"""
@@ -30,7 +30,8 @@ class DataMgr:
 		Timer(self.period_sample_s, self.sample_consumption, ()).start()
 	
 	def sample_consumption(self):
-		self.set(c_W=random.randint(500,2000))
+		newconsump = (self.now_c_W + random.randint(500,2000)) / 2
+		self.set(c_W=newconsump)
 		Timer(self.period_sample_s, self.sample_consumption, ()).start()
 
 	def production_blink(self):
@@ -49,17 +50,17 @@ class DataMgr:
 	
 	def aggregate_store(self):
 		print "Data aggregation routine"
-		self.r.rpush('aggregate_ts_ms_since_epoch', dtepoch(self.lastupdate))
+		self.r.rpush('aggregate_ts_ms_since_epoch', dtepoch_ms(self.lastupdate))
 		self.r.rpush('p_Wh', self.p_Wh)
 		self.r.rpush('c_Wh', self.c_Wh)
 		self.r.rpush('a_Wh', self.a_Wh)
 		self.r.rpush('s_Wh', self.s_Wh)
 		self.r.rpush('b_Wh', self.b_Wh)
 		#TODO
-		self.aggregate_reset()
+		self.reset_aggregate()
 
 	def live_store(self):
-		self.r.rpush('ts_ms_since_epoch', dtepoch(self.lastupdate))
+		self.r.rpush('ts_ms_since_epoch', dtepoch_ms(self.lastupdate))
 		self.r.rpush('p_W', self.now_p_W)
 		self.r.rpush('c_W', self.now_c_W)
 		while self.r.llen('ts_ms_since_epoch') > 300:
@@ -69,6 +70,15 @@ class DataMgr:
 		while self.r.llen('c_W') > 300:
 			self.r.lpop('c_W')
  
+	def get_latest_live_data(self):
+		res = { 
+				'ts_ms_since_epoch' : map(int, self.r.lrange('ts_ms_since_epoch', 0, -1)) ,
+				'p_W' : map(int, self.r.lrange('p_W', 0, -1)) ,
+				'c_W' : map(int, self.r.lrange('c_W', 0, -1)) ,
+				}
+		print res
+		return res
+
 	def get_production_W(self):
 		return self.now_p_W
 

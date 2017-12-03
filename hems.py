@@ -7,7 +7,7 @@ import DataMgr
 production_W = 0
 consumption_W = 0
 app = Flask(__name__)
-datamgr = DataMgr.DataMgr(period_check_s=5, store_interval_s=20, persist_interval_s=60)
+datamgr = DataMgr.DataMgr(period_sample_s=1, aggregate_interval_s=8)
 
 @app.route('/')
 def index():
@@ -35,6 +35,11 @@ def data_consumption_live():
 def latest_live_data():
 	global datamgr
 	return jsonify(datamgr.get_latest_live_data())
+
+@app.route('/data/last_day')
+def get_last_day_aggregate_data():
+	global datamgr
+	return jsonify(datamgr.get_last_day_aggregate_data())
 
 if __name__ == '__main__':
 	app.run(host="0.0.0.0", port=3000, debug=False)

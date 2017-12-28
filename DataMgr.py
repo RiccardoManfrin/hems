@@ -99,11 +99,11 @@ class DataMgr:
 		epoch_ms = self.r.lrange('aggregate_ts_ms_since_epoch', 0, 0)
 		while is_more_than_24h_ahead(epoch_ms):
 			self.r.lpop('aggregate_ts_ms_since_epoch')
-			self.r.lpop('p_Wh')
-			self.r.lpop('c_Wh')
-			self.r.lpop('a_Wh')
-			self.r.lpop('s_Wh')
-			self.r.lpop('b_Wh')
+			self.r.lpop('daily_p_Wh')
+			self.r.lpop('daily_c_Wh')
+			self.r.lpop('daily_a_Wh')
+			self.r.lpop('daily_s_Wh')
+			self.r.lpop('daily_b_Wh')
 
 
 	def live_store(self):
@@ -120,35 +120,33 @@ class DataMgr:
 	def get_latest_live_data(self):
 		res = { 
 				'ts_ms_since_epoch' : map(int, self.r.lrange('ts_ms_since_epoch', 0, -1)) ,
-				'p_W' : map(int, self.r.lrange('p_W', 0, -1)) ,
-				'c_W' : map(int, self.r.lrange('c_W', 0, -1)) ,
+				'p_W' : map(float, self.r.lrange('p_W', 0, -1)) ,
+				'c_W' : map(float, self.r.lrange('c_W', 0, -1)) ,
 				}
 		return res
 
 	def get_last_day_aggregate_data(self):
-		res = { 
-				'ts_ms_since_epoch' : map(int, self.r.lrange('ts_ms_since_epoch', 0, -1)) ,
-				'p_W' : map(int, self.r.lrange('p_W', 0, -1)) ,
-				'c_W' : map(int, self.r.lrange('c_W', 0, -1)) ,
-				}
+		res = {
+			'aggregate_ts_ms_since_epoch' : map(int, self.r.lrange('aggregate_ts_ms_since_epoch', 0, -1)),
+			'p_Wh' : map(float, self.r.lrange('p_Wh', 0, -1)),
+			'c_Wh' : map(float, self.r.lrange('c_Wh', 0, -1)),
+			'a_Wh' : map(float, self.r.lrange('a_Wh', 0, -1)),
+			's_Wh' : map(float, self.r.lrange('s_Wh', 0, -1)),
+			'b_Wh' : map(float, self.r.lrange('b_Wh', 0, -1))
+		}
+
 		return res
 
 	def get_last_365_days_aggregate(self):
-		self.r.lrange('p_Wh', i, i)
-		self.r.lrange('c_Wh', i, i)
-		self.r.lrange('a_Wh', i, i)
-		self.r.lrange('s_Wh', i, i)
-		self.r.lrange('b_Wh', i, i)
-
 		res = {
 			'daily_epoch_ms' :map(int, self.r.lrange('daily_epoch_ms', -365, -1)),
-			'daily_p_Wh' :map(int, self.r.lrange('daily_p_Wh', -365, -1)),
-			'daily_c_Wh' :map(int, self.r.lrange('daily_c_Wh', -365, -1)),
-			'daily_a_Wh' :map(int, self.r.lrange('daily_a_Wh', -365, -1)),
-			'daily_s_Wh' :map(int, self.r.lrange('daily_s_Wh', -365, -1)),
-			'daily_b_Wh' :map(int, self.r.lrange('daily_b_Wh', -365, -1))
-			}
-
+			'daily_p_Wh' :map(float, self.r.lrange('daily_p_Wh', -365, -1)),
+			'daily_c_Wh' :map(float, self.r.lrange('daily_c_Wh', -365, -1)),
+			'daily_a_Wh' :map(float, self.r.lrange('daily_a_Wh', -365, -1)),
+			'daily_s_Wh' :map(float, self.r.lrange('daily_s_Wh', -365, -1)),
+			'daily_b_Wh' :map(float, self.r.lrange('daily_b_Wh', -365, -1))
+		}
+		return res
 
 	def get_production_W(self):
 		return self.now_p_W

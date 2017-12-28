@@ -1,5 +1,12 @@
 var consumptionserie = {};
 var last_24 = {};
+var last_24_ts = {};
+var last_24_p_Wh = {};
+var last_24_c_Wh = {};
+var last_24_a_Wh = {};
+var last_24_s_Wh = {};
+var last_24_b_Wh = {};
+
 var consumptiony = 0;
 var productiony = 0
 
@@ -62,13 +69,13 @@ function last_day_chart() {
 				}
 			},
 			series: [{
-				name: 'Consumption [W]',
+				name: 'Consumption [Wh]',
 				color: '#DF5353',
-				data: [{x : 1512294322140, y : 10104}]
+				data: [last_24_c_Wh]
 			}, {
 				name: 'Production [W]',
 				color: '#55BF3B',
-				data: [{x : 1512294322140, y : 13104}]
+				data: [last_24_p_Wh]
 			}] 
 		});
 	Highcharts.setOptions({
@@ -467,6 +474,20 @@ $.getJSON("/data/latest_live_data", function(data){
 });
 
 $.getJSON("/data/last_day", function(data){
-	last_24 = data
+	last_24 = data;
+	_last_24_ts = last_24['aggregate_ts_ms_since_epoch']
+	_last_24_p_Wh = last_24['p_Wh']
+	_last_24_c_Wh = last_24['c_Wh']
+	_last_24_a_Wh = last_24['a_Wh']
+	_last_24_s_Wh = last_24['s_Wh']
+	_last_24_b_Wh = last_24['b_Wh']
+
+	last_24_ts
+	last_24_p_Wh
+	last_24_c_Wh
+	last_24_a_Wh
+	last_24_s_Wh
+	last_24_b_Wh
+
 	last_day_chart();
 });

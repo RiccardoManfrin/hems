@@ -1,4 +1,4 @@
-var consumptionserie = {};
+var five_mins_initial_data = {};
 var last_24 = {};
 var last_24_ts = {};
 var last_24_p_Wh = {};
@@ -155,10 +155,10 @@ function load_5mins_chart() {
 			color: '#DF5353',
 			data: (function () {
 				var data = []
-				for (var i = 0; i < consumptionserie['ts_ms_since_epoch'].length; i++) {
+				for (var i = 0; i < five_mins_initial_data['ts_ms_since_epoch'].length; i++) {
 						var point = { 
-							x: consumptionserie['ts_ms_since_epoch'][i], 
-							y: consumptionserie['c_W'][i]
+							x: five_mins_initial_data['ts_ms_since_epoch'][i], 
+							y: five_mins_initial_data['c_W'][i]
 						}
 
 						//console.log("Data point " + JSON.stringify(point))
@@ -173,19 +173,18 @@ function load_5mins_chart() {
 			name: 'Prodution [W]',
 			color: '#55BF3B',
 			data: (function () {
-				// generate an array of random data
-				var data = [],
-					time = (new Date()).getTime(),
-					i,
-					productiony = 0;
-				
-				for (i = -360; i <= 0; i += 1) {
-					$.getJSON("/data/production/live", function(data){productiony = data});
-					data.push({
-						x: time + i * 1000,
-						y: productiony
-					});
+				var data = []
+				for (var i = 0; i < five_mins_initial_data['ts_ms_since_epoch'].length; i++) {
+						var point = { 
+							x: five_mins_initial_data['ts_ms_since_epoch'][i], 
+							y: five_mins_initial_data['p_W'][i]
+						}
+
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
 				}
+
+
 				return data;
 			}())
 		}]
@@ -469,7 +468,7 @@ function load_5mins_chart() {
 
 
 $.getJSON("/data/latest_live_data", function(data){
-	consumptionserie = data
+	five_mins_initial_data = data
 	load_5mins_chart();
 });
 

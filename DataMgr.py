@@ -62,8 +62,8 @@ class DataMgr:
 		#  -  16 = +/-0.256V
 		# See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
 		GAIN = 1
-		V = max(0, adc.read_adc(0, gain=GAIN) * 124.77 / 1000000.0)
-		c_W = V / 0.12 * 580
+		V = max(0, self.adc.read_adc(0, gain=GAIN) * 124.77 / 1000000.0)
+		c_W = int(V / 0.12 * 580)
 		self.set(c_W=c_W)
 		Timer(self.period_sample_s, self.sample_consumption, ()).start()
 

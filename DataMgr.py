@@ -4,6 +4,7 @@ import time
 import redis
 import random
 import schedule
+import Adafruit_ADS1x15
 from threading import Timer
 
 def now():
@@ -38,6 +39,7 @@ class DataMgr:
 		self.period_check_s = 1
 		self.aggregate_interval_s = aggregate_interval_s
 		self.period_sample_s = period_sample_s
+		self.adc = Adafruit_ADS1x15.ADS1115()
 		Timer(self.period_check_s, self.timeout, ()).start()
 		Timer(self.period_sample_s, self.sample_consumption, ()).start()
 		schedule.every().day.at("00:00").do(self.daily_aggregate)
@@ -46,8 +48,23 @@ class DataMgr:
 		print str(now()) + "\t| " + logstr
 
 	def sample_consumption(self):
-		newconsump = (self.now_c_W + random.randint(500,2000)) / 2
-		self.set(c_W=newconsump)
+		# Note you can change the I2C address from its default (0x48), and/or the I2C
+		# bus by passing in these optional parameters:
+		#adc = Adafruit_ADS1x15.ADS1015(address=0x49, busnum=1)
+
+		# Choose a gain of 1 for reading voltages from 0 to 4.09V.
+		# Or pick a different gain to change the range of voltages that are read:
+		#  - 2/3 = +/-6.144V
+		#  -   1 = +/-4.096V
+		#  -   2 = +/-2.048V
+		#  -   4 = +/-1.024V
+		#  -   8 = +/-0.512V
+		#  -  16 = +/-0.256V
+		# See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
+		GAIN = 1
+		V = max(0, adc.read_adc(0, gain=GAIN) * 124.77 / 1000000.0)
+		c_W = V / 0.12 * 580
+		self.set(c_W=c_W)
 		Timer(self.period_sample_s, self.sample_consumption, ()).start()
 
 	def production_blink(self):

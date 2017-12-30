@@ -40,7 +40,7 @@ class DataMgr:
 		self.aggregate_interval_s = aggregate_interval_s
 		self.period_sample_s = period_sample_s
 		self.adc = Adafruit_ADS1x15.ADS1115()
-		Timer(self.period_check_s, self.timeout, ()).start()
+		Timer(self.period_check_s, self.check_to_aggregate_timeout, ()).start()
 		Timer(self.period_sample_s, self.sample_consumption, ()).start()
 		schedule.every().day.at("00:00").do(self.daily_aggregate)
 	
@@ -74,12 +74,12 @@ class DataMgr:
 		self.production_blink_ts = now()
 		self.set(p_W=p_W)
 
-	def timeout(self):
+	def check_to_aggregate_timeout(self):
 		_now = now()
 		if (_now - self.lastaggregate).seconds > self.aggregate_interval_s:
 			self.lastaggregate = _now
 			self.aggregate_store()
-		Timer(self.period_check_s, self.timeout, ()).start()
+		Timer(self.period_check_s, self.check_to_aggregate_timeout, ()).start()
 	
 	def aggregate_store(self):
 		self.log("Data aggregation routine")
@@ -121,6 +121,7 @@ class DataMgr:
 			self.r.lpop('daily_a_Wh')
 			self.r.lpop('daily_s_Wh')
 			self.r.lpop('daily_b_Wh')
+			epoch_ms = self.r.lrange('aggregate_ts_ms_since_epoch', 0, 0)
 
 
 	def live_store(self):

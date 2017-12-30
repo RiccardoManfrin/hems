@@ -68,14 +68,101 @@ function last_day_chart() {
 					}
 				}
 			},
-			series: [{
-				name: 'Consumption [Wh]',
-				color: '#DF5353',
-				data: [last_24_c_Wh]
-			}, {
-				name: 'Production [W]',
-				color: '#55BF3B',
-				data: [last_24_p_Wh]
+			series: [
+			{
+				name: 'Consumed [Wh]',
+				color: 'rgba(165,0,0,0.5)',
+				//data: [last_24_c_Wh]
+				data: (function () {
+					var data = [];
+					for (var i = 0; i < last_24_ts.length; i++) {
+							var point = { 
+								x: last_24_ts[i], 
+								y: last_24_c_Wh[i]
+							}
+
+							//console.log("Data point " + JSON.stringify(point))
+							data.push(point);
+					}
+
+					return data;
+				}())
+			},
+			{
+				name: 'Produced [Wh]',
+				color: 'rgba(0,165,0,0.5)',
+				//data: [last_24_c_Wh]
+				data: (function () {
+					var data = [];
+					for (var i = 0; i < last_24_ts.length; i++) {
+							var point = { 
+								x: last_24_ts[i], 
+								y: last_24_p_Wh[i]
+							}
+
+							//console.log("Data point " + JSON.stringify(point))
+							data.push(point);
+					}
+
+					return data;
+				}())
+			},
+			{
+				name: 'Auto-consumed [Wh]',
+				color: 'rgba(0,165,0,0.8)',
+				//data: [last_24_c_Wh]
+				data: (function () {
+					var data = [];
+					for (var i = 0; i < last_24_ts.length; i++) {
+							var point = { 
+								x: last_24_ts[i], 
+								y: last_24_a_Wh[i]
+							}
+
+							//console.log("Data point " + JSON.stringify(point))
+							data.push(point);
+					}
+
+					return data;
+				}())
+			},
+			{
+				name: 'Sold [Wh]',
+				color: '#ffd200',
+				//data: [last_24_c_Wh]
+				data: (function () {
+					var data = [];
+					for (var i = 0; i < last_24_ts.length; i++) {
+							var point = { 
+								x: last_24_ts[i], 
+								y: last_24_s_Wh[i]
+							}
+
+							//console.log("Data point " + JSON.stringify(point))
+							data.push(point);
+					}
+
+					return data;
+				}())
+			},
+			{
+				name: 'Bought [Wh]',
+				color: 'rgba(165,0,0,0.8)',
+				//data: [last_24_c_Wh]
+				data: (function () {
+					var data = [];
+					for (var i = 0; i < last_24_ts.length; i++) {
+							var point = { 
+								x: last_24_ts[i], 
+								y: last_24_b_Wh[i]
+							}
+
+							//console.log("Data point " + JSON.stringify(point))
+							data.push(point);
+					}
+
+					return data;
+				}())
 			}] 
 		});
 	Highcharts.setOptions({
@@ -154,7 +241,7 @@ function load_5mins_chart() {
 			name: 'Consumption [W]',
 			color: '#DF5353',
 			data: (function () {
-				var data = []
+				var data = [];
 				for (var i = 0; i < five_mins_initial_data['ts_ms_since_epoch'].length; i++) {
 						var point = { 
 							x: five_mins_initial_data['ts_ms_since_epoch'][i], 
@@ -165,7 +252,6 @@ function load_5mins_chart() {
 						data.push(point);
 				}
 
-
 				return data;
 			}())
 		},
@@ -173,7 +259,7 @@ function load_5mins_chart() {
 			name: 'Prodution [W]',
 			color: '#55BF3B',
 			data: (function () {
-				var data = []
+				var data = [];
 				for (var i = 0; i < five_mins_initial_data['ts_ms_since_epoch'].length; i++) {
 						var point = { 
 							x: five_mins_initial_data['ts_ms_since_epoch'][i], 
@@ -183,7 +269,6 @@ function load_5mins_chart() {
 						//console.log("Data point " + JSON.stringify(point))
 						data.push(point);
 				}
-
 
 				return data;
 			}())
@@ -474,19 +559,12 @@ $.getJSON("/data/latest_live_data", function(data){
 
 $.getJSON("/data/last_day", function(data){
 	last_24 = data;
-	_last_24_ts = last_24['aggregate_ts_ms_since_epoch']
-	_last_24_p_Wh = last_24['p_Wh']
-	_last_24_c_Wh = last_24['c_Wh']
-	_last_24_a_Wh = last_24['a_Wh']
-	_last_24_s_Wh = last_24['s_Wh']
-	_last_24_b_Wh = last_24['b_Wh']
-
-	last_24_ts
-	last_24_p_Wh
-	last_24_c_Wh
-	last_24_a_Wh
-	last_24_s_Wh
-	last_24_b_Wh
+	last_24_ts = last_24['aggregate_ts_ms_since_epoch']
+	last_24_p_Wh = last_24['p_Wh']
+	last_24_c_Wh = last_24['c_Wh']
+	last_24_a_Wh = last_24['a_Wh']
+	last_24_s_Wh = last_24['s_Wh']
+	last_24_b_Wh = last_24['b_Wh']
 
 	last_day_chart();
 });

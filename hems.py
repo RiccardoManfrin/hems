@@ -7,7 +7,7 @@ import DataMgr
 production_W = 0
 consumption_W = 0
 app = Flask(__name__)
-datamgr = DataMgr.DataMgr(period_sample_s=1, aggregate_interval_s=8)
+datamgr = DataMgr.DataMgr(period_sample_s=1)
 
 @app.route('/')
 def index():

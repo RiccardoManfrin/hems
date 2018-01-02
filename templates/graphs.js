@@ -6,11 +6,12 @@ var last_24_c_Wh = {};
 var last_24_a_Wh = {};
 var last_24_s_Wh = {};
 var last_24_b_Wh = {};
+var daily = {};
 
 var consumptiony = 0;
 var productiony = 0
 
-function last_day_chart() {
+function load_last_day_chart() {
 		Highcharts.chart('top_left', {
 			chart: {
 				type: 'column',
@@ -148,7 +149,6 @@ function last_day_chart() {
 			{
 				name: 'Bought [Wh]',
 				color: 'rgba(165,0,0,0.8)',
-				//data: [last_24_c_Wh]
 				data: (function () {
 					var data = [];
 					for (var i = 0; i < last_24_ts.length; i++) {
@@ -276,210 +276,7 @@ function load_5mins_chart() {
 	});
 }
 
-
-	Highcharts.chart('gauge_production', 
-		{
-		    chart: {
-		        type: 'gauge',
-		        plotBackgroundColor: null,
-		        plotBackgroundImage: null,
-		        plotBorderWidth: 0,
-		        plotShadow: false,
-		        height : 250
-		    },
-		    credits: {
-		      enabled: false
-		  	},
-		    title: {
-		        text: 'Live production'
-		    },
-
-		    pane: {
-		        startAngle: -150,
-		        endAngle: 150,
-		        background: [{
-		            backgroundColor: {
-		                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-		                stops: [
-		                    [0, '#FFF'],
-		                    [1, '#333']
-		                ]
-		            },
-		            borderWidth: 0,
-		            outerRadius: '109%'
-		        }, {
-		            backgroundColor: {
-		                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-		                stops: [
-		                    [0, '#333'],
-		                    [1, '#FFF']
-		                ]
-		            },
-		            borderWidth: 1,
-		            outerRadius: '107%'
-		        }, {
-		            // default background
-		        }, {
-		            backgroundColor: '#DDD',
-		            borderWidth: 0,
-		            outerRadius: '105%',
-		            innerRadius: '103%'
-		        }]
-		    },
-
-		    // the value axis
-		    yAxis: {
-		        min: 0,
-		        max: 6000,
-
-		        minorTickInterval: 'auto',
-		        minorTickWidth: 1,
-		        minorTickLength: 10,
-		        minorTickPosition: 'inside',
-		        minorTickColor: '#666',
-
-		        tickPixelInterval: 30,
-		        tickWidth: 2,
-		        tickPosition: 'inside',
-		        tickLength: 10,
-		        tickColor: '#666',
-		        labels: {
-		            step: 2,
-		            rotation: 'auto'
-		        },
-		        title: {
-		            text: '[W]'
-		        },
-		        plotBands: [{
-		            from: 0,
-		            to: 6000,
-		            color: '#55BF3B' // green
-		        }]
-		    },
-		    exporting: {
-				enabled: false
-			},
-		    series: [{
-		        name: 'Watt',
-		        data: [0],
-		        tooltip: {
-		            valueSuffix: ' [W]'
-		        }
-		    }]
-
-		},
-		// Add some life
-		function (chart) {
-		    if (!chart.renderer.forExport) {
-		        setInterval(function () {
-		            var point = chart.series[0].points[0];
-		            point.update(productiony);
-		        }, 1000);
-		    }
-		});
-
-
-	Highcharts.chart('gauge_consumption', 
-		{
-		    chart: {
-		        type: 'gauge',
-		        plotBackgroundColor: null,
-		        plotBackgroundImage: null,
-		        plotBorderWidth: 0,
-		        plotShadow: false,
-		        height : 250
-		    },
-		    credits: {
-		      enabled: false
-		  	},
-		    title: {
-		        text: 'Live consumption'
-		    },
-
-		    pane: {
-		        startAngle: -150,
-		        endAngle: 150,
-		        background: [{
-		            backgroundColor: {
-		                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-		                stops: [
-		                    [0, '#FFF'],
-		                    [1, '#333']
-		                ]
-		            },
-		            borderWidth: 0,
-		            outerRadius: '109%'
-		        }, {
-		            backgroundColor: {
-		                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-		                stops: [
-		                    [0, '#333'],
-		                    [1, '#FFF']
-		                ]
-		            },
-		            borderWidth: 1,
-		            outerRadius: '107%'
-		        }, {
-		            // default background
-		        }, {
-		            backgroundColor: '#DDD',
-		            borderWidth: 0,
-		            outerRadius: '105%',
-		            innerRadius: '103%'
-		        }]
-		    },
-
-		    // the value axis
-		    yAxis: {
-		        min: 0,
-		        max: 6000,
-
-		        minorTickInterval: 'auto',
-		        minorTickWidth: 1,
-		        minorTickLength: 10,
-		        minorTickPosition: 'inside',
-		        minorTickColor: '#666',
-
-		        tickPixelInterval: 30,
-		        tickWidth: 2,
-		        tickPosition: 'inside',
-		        tickLength: 10,
-		        tickColor: '#666',
-		        labels: {
-		            step: 2,
-		            rotation: 'auto'
-		        },
-		        title: {
-		            text: '[W]'
-		        },
-		        plotBands: [{
-		            from: 0,
-		            to: 6000,
-		            color: '#DF5353' // red
-		        }]
-		    },
-		    exporting: {
-				enabled: false
-			},
-		    series: [{
-		        name: 'Watt',
-		        data: [0],
-		        tooltip: {
-		            valueSuffix: ' [W]'
-		        }
-		    }]
-
-		},
-		// Add some life
-		function (chart) {
-		    if (!chart.renderer.forExport) {
-		        setInterval(function () {
-		            var point = chart.series[0].points[0];
-		            point.update(consumptiony);
-		        }, 1000);
-		    }
-		});
-
+function load_daily_chart() {
 	Highcharts.chart('daily_energy', {
 	    chart: {
 	        type: 'column',
@@ -489,7 +286,8 @@ function load_5mins_chart() {
 	        text: 'Daily KWh'
 	    },
 	    xAxis: {
-	        categories: ['15/11','16/11']
+			type: 'datetime',
+			gridLineWidth: 1
 	    },
 	    yAxis: {
 	        min: 0,
@@ -529,27 +327,309 @@ function load_5mins_chart() {
 	        enabled: false
 	    },
 	    series: [{
-	        name: 'Produced',
-	        data: [107, 200],
+	        name: 'Produced [Wh]',
 	        color: 'rgba(0,165,0,0.5)',
 	        pointPlacement: 0.15,
-	        pointPadding: 0.3
+	        pointPadding: 0.3,
+	        data: (function () {
+	        	var data = [];
+				daily_ts = daily['daily_epoch_ms']
+				daily_p_Wh = daily['daily_p_Wh']
+				daily_c_Wh = daily['daily_c_Wh']
+				daily_a_Wh = daily['daily_a_Wh']
+				daily_s_Wh = daily['daily_s_Wh']
+				daily_b_Wh = daily['daily_b_Wh']
+				for (var i = 0; i < daily_ts.length; i++) {
+						var point = { 
+							x: daily_ts[i], 
+							y: daily_p_Wh[i]
+						}
+
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
+
+				return data;
+			}())
 	    }, {
-	        name: 'Auto-consumed',
-	        data: [40, 30],
-	        color: 'rgba(0,165,0,0.8)'
+	        name: 'Auto-consumed [Wh]',
+	        color: 'rgba(0,165,0,0.8)',
+	        data: (function () {
+	        	var data = [];
+				daily_ts = daily['daily_epoch_ms']
+				daily_p_Wh = daily['daily_p_Wh']
+				daily_c_Wh = daily['daily_c_Wh']
+				daily_a_Wh = daily['daily_a_Wh']
+				daily_s_Wh = daily['daily_s_Wh']
+				daily_b_Wh = daily['daily_b_Wh']
+				for (var i = 0; i < daily_ts.length; i++) {
+						var point = { 
+							x: daily_ts[i], 
+							y: daily_a_Wh[i]
+						}
+
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
+
+				return data;
+			}())
 	    }, {
-	        name: 'Consumed',
-	        data: [145, 80],
+	        name: 'Consumed [Wh]',
 	        color: 'rgba(165,0,0,0.5)',
-	        pointPadding: 0.3
+	        pointPadding: 0.3,
+	        data: (function () {
+	        	var data = [];
+				daily_ts = daily['daily_epoch_ms']
+				daily_p_Wh = daily['daily_p_Wh']
+				daily_c_Wh = daily['daily_c_Wh']
+				daily_a_Wh = daily['daily_a_Wh']
+				daily_s_Wh = daily['daily_s_Wh']
+				daily_b_Wh = daily['daily_b_Wh']
+				for (var i = 0; i < daily_ts.length; i++) {
+						var point = { 
+							x: daily_ts[i], 
+							y: daily_c_Wh[i]
+						}
+
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
+
+				return data;
+			}())
 	    }, {
-	        name: 'Bought',
-	        data: [105, 50],
+	        name: 'Bought [Wh]',
 	        color: 'rgba(165,0,0,0.8)',
-	        pointPlacement: -0.15
+	        pointPlacement: -0.15,
+	        data: (function () {
+	        	var data = [];
+				daily_ts = daily['daily_epoch_ms']
+				daily_p_Wh = daily['daily_p_Wh']
+				daily_c_Wh = daily['daily_c_Wh']
+				daily_a_Wh = daily['daily_a_Wh']
+				daily_s_Wh = daily['daily_s_Wh']
+				daily_b_Wh = daily['daily_b_Wh']
+				for (var i = 0; i < daily_ts.length; i++) {
+						var point = { 
+							x: daily_ts[i], 
+							y: daily_b_Wh[i]
+						}
+
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
+
+				return data;
+			}())
 	    }]
 	});
+}
+
+Highcharts.chart('gauge_production', 
+	{
+	    chart: {
+	        type: 'gauge',
+	        plotBackgroundColor: null,
+	        plotBackgroundImage: null,
+	        plotBorderWidth: 0,
+	        plotShadow: false,
+	        height : 250
+	    },
+	    credits: {
+	      enabled: false
+	  	},
+	    title: {
+	        text: 'Live production'
+	    },
+
+	    pane: {
+	        startAngle: -150,
+	        endAngle: 150,
+	        background: [{
+	            backgroundColor: {
+	                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+	                stops: [
+	                    [0, '#FFF'],
+	                    [1, '#333']
+	                ]
+	            },
+	            borderWidth: 0,
+	            outerRadius: '109%'
+	        }, {
+	            backgroundColor: {
+	                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+	                stops: [
+	                    [0, '#333'],
+	                    [1, '#FFF']
+	                ]
+	            },
+	            borderWidth: 1,
+	            outerRadius: '107%'
+	        }, {
+	            // default background
+	        }, {
+	            backgroundColor: '#DDD',
+	            borderWidth: 0,
+	            outerRadius: '105%',
+	            innerRadius: '103%'
+	        }]
+	    },
+
+	    // the value axis
+	    yAxis: {
+	        min: 0,
+	        max: 6000,
+
+	        minorTickInterval: 'auto',
+	        minorTickWidth: 1,
+	        minorTickLength: 10,
+	        minorTickPosition: 'inside',
+	        minorTickColor: '#666',
+
+	        tickPixelInterval: 30,
+	        tickWidth: 2,
+	        tickPosition: 'inside',
+	        tickLength: 10,
+	        tickColor: '#666',
+	        labels: {
+	            step: 2,
+	            rotation: 'auto'
+	        },
+	        title: {
+	            text: '[W]'
+	        },
+	        plotBands: [{
+	            from: 0,
+	            to: 6000,
+	            color: '#55BF3B' // green
+	        }]
+	    },
+	    exporting: {
+			enabled: false
+		},
+	    series: [{
+	        name: 'Watt',
+	        data: [0],
+	        tooltip: {
+	            valueSuffix: ' [W]'
+	        }
+	    }]
+
+	},
+	// Add some life
+	function (chart) {
+	    if (!chart.renderer.forExport) {
+	        setInterval(function () {
+	            var point = chart.series[0].points[0];
+	            point.update(productiony);
+	        }, 1000);
+	    }
+	});
+
+
+Highcharts.chart('gauge_consumption', 
+	{
+	    chart: {
+	        type: 'gauge',
+	        plotBackgroundColor: null,
+	        plotBackgroundImage: null,
+	        plotBorderWidth: 0,
+	        plotShadow: false,
+	        height : 250
+	    },
+	    credits: {
+	      enabled: false
+	  	},
+	    title: {
+	        text: 'Live consumption'
+	    },
+
+	    pane: {
+	        startAngle: -150,
+	        endAngle: 150,
+	        background: [{
+	            backgroundColor: {
+	                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+	                stops: [
+	                    [0, '#FFF'],
+	                    [1, '#333']
+	                ]
+	            },
+	            borderWidth: 0,
+	            outerRadius: '109%'
+	        }, {
+	            backgroundColor: {
+	                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+	                stops: [
+	                    [0, '#333'],
+	                    [1, '#FFF']
+	                ]
+	            },
+	            borderWidth: 1,
+	            outerRadius: '107%'
+	        }, {
+	            // default background
+	        }, {
+	            backgroundColor: '#DDD',
+	            borderWidth: 0,
+	            outerRadius: '105%',
+	            innerRadius: '103%'
+	        }]
+	    },
+
+	    // the value axis
+	    yAxis: {
+	        min: 0,
+	        max: 6000,
+
+	        minorTickInterval: 'auto',
+	        minorTickWidth: 1,
+	        minorTickLength: 10,
+	        minorTickPosition: 'inside',
+	        minorTickColor: '#666',
+
+	        tickPixelInterval: 30,
+	        tickWidth: 2,
+	        tickPosition: 'inside',
+	        tickLength: 10,
+	        tickColor: '#666',
+	        labels: {
+	            step: 2,
+	            rotation: 'auto'
+	        },
+	        title: {
+	            text: '[W]'
+	        },
+	        plotBands: [{
+	            from: 0,
+	            to: 6000,
+	            color: '#DF5353' // red
+	        }]
+	    },
+	    exporting: {
+			enabled: false
+		},
+	    series: [{
+	        name: 'Watt',
+	        data: [0],
+	        tooltip: {
+	            valueSuffix: ' [W]'
+	        }
+	    }]
+
+	},
+	// Add some life
+	function (chart) {
+	    if (!chart.renderer.forExport) {
+	        setInterval(function () {
+	            var point = chart.series[0].points[0];
+	            point.update(consumptiony);
+	        }, 1000);
+	    }
+	});
+
+	
 
 
 $.getJSON("/data/latest_live_data", function(data){
@@ -566,5 +646,10 @@ $.getJSON("/data/last_day", function(data){
 	last_24_s_Wh = last_24['s_Wh']
 	last_24_b_Wh = last_24['b_Wh']
 
-	last_day_chart();
+	load_last_day_chart();
+});
+
+$.getJSON("/data/daily", function(data){
+	daily = data;
+	load_daily_chart();
 });

@@ -41,6 +41,11 @@ def get_last_day_aggregate_data():
 	global datamgr
 	return jsonify(datamgr.get_last_day_aggregate_data())
 
+@app.route('/data/daily')
+def get_last_365_days_aggregate():
+	global datamgr
+	return jsonify(datamgr.get_last_365_days_aggregate())
+
 if __name__ == '__main__':
 	app.run(host="0.0.0.0", port=3000, debug=False)
 	

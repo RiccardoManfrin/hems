@@ -25,7 +25,7 @@ def daily_ms():
 	return 24*60*60*1000
 
 def is_more_than_24h_ahead(epoch_ms):
-	return ((dtepoch_ms(now()) - daily_ms) > epoch_ms)   
+	return ((dtepoch_ms(now()) - daily_ms()) > epoch_ms)   
 
 class DataMgr:
 	"""Data Manager"""
@@ -100,11 +100,11 @@ class DataMgr:
 		daily_s_Wh = 0
 		daily_b_Wh = 0
 		for i in range(0, aggregate_len):
-			daily_p_Wh = daily_p_Wh+ self.r.lrange('p_Wh', i, i)
-			daily_c_Wh = daily_c_Wh+ self.r.lrange('c_Wh', i, i)
-			daily_a_Wh = daily_a_Wh+ self.r.lrange('a_Wh', i, i)
-			daily_s_Wh = daily_s_Wh+ self.r.lrange('s_Wh', i, i)
-			daily_b_Wh = daily_b_Wh+ self.r.lrange('b_Wh', i, i)
+			daily_p_Wh = daily_p_Wh+ float(self.r.lindex('p_Wh', i))
+			daily_c_Wh = daily_c_Wh+ float(self.r.lindex('c_Wh', i))
+			daily_a_Wh = daily_a_Wh+ float(self.r.lindex('a_Wh', i))
+			daily_s_Wh = daily_s_Wh+ float(self.r.lindex('s_Wh', i))
+			daily_b_Wh = daily_b_Wh+ float(self.r.lindex('b_Wh', i))
 
 		self.r.rpush('daily_epoch_ms', dtepoch_ms(now()))
 		self.r.rpush('daily_p_Wh', daily_p_Wh)
@@ -113,7 +113,7 @@ class DataMgr:
 		self.r.rpush('daily_s_Wh', daily_s_Wh)
 		self.r.rpush('daily_b_Wh', daily_b_Wh)
 
-		epoch_ms = self.r.lrange('aggregate_ts_ms_since_epoch', 0, 0)
+		epoch_ms = float(self.r.lindex('aggregate_ts_ms_since_epoch', 0))
 		while is_more_than_24h_ahead(epoch_ms):
 			self.r.lpop('aggregate_ts_ms_since_epoch')
 			self.r.lpop('daily_p_Wh')
@@ -121,7 +121,7 @@ class DataMgr:
 			self.r.lpop('daily_a_Wh')
 			self.r.lpop('daily_s_Wh')
 			self.r.lpop('daily_b_Wh')
-			epoch_ms = self.r.lrange('aggregate_ts_ms_since_epoch', 0, 0)
+			epoch_ms = float(self.r.lindex('aggregate_ts_ms_since_epoch', 0))
 
 
 	def live_store(self):

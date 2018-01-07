@@ -4,10 +4,14 @@ import random
 import json
 import DataMgr
 
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
 production_W = 0
 consumption_W = 0
 app = Flask(__name__)
-datamgr = DataMgr.DataMgr(period_sample_s=1)
+datamgr = DataMgr.DataMgr(aggregate_interval_s=3600)
 
 @app.route('/')
 def index():

@@ -11,169 +11,170 @@ var daily = {};
 var consumptiony = 0;
 var productiony = 0
 
+Highcharts.setOptions({
+	global: {
+		useUTC: false
+	}
+});
+
 function load_last_day_chart() {
-		Highcharts.chart('top_left', {
-			chart: {
-				type: 'column',
-				height : 300
-			},
-			credits: {
-		      enabled: false
-		  	},
+	Highcharts.chart('hourly', {
+		chart: {
+			type: 'column',
+			height : 300
+		},
+		credits: {
+	      enabled: false
+	  	},
+		title: {
+			text: 'Last day'
+		},
+		subtitle: {
+			text: 'Prodution VS consumption'
+		},
+		xAxis: {
+			type: 'datetime',
+			gridLineWidth: 1
+		},
+		yAxis: {
 			title: {
-				text: 'Last day'
+				text: '[W]'
 			},
-			subtitle: {
-				text: 'Prodution VS consumption'
-			},
-			xAxis: {
-				type: 'datetime',
-				gridLineWidth: 1
-			},
-			yAxis: {
-				title: {
-					text: '[W]'
-				},
-				labels: {
-					formatter: function () {
-						return this.value / 1000 + 'k';
-					}
+			labels: {
+				formatter: function () {
+					return this.value / 1000 + 'k';
 				}
-			},
-			legend: {
-				align: 'left',
-				verticalAlign: 'top',
-				layout: 'vertical',
-				borderColor:'#999999',
-				borderRadius:5,
-				borderWidth:0.5,
-				x: 50,
-				y: 50,
-				floating: true
-			},
-			tooltip: {
-				pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-			},
-			plotOptions: {
-				area: {
-					pointStart: 1940,
-					marker: {
-						enabled: false,
-						symbol: 'circle',
-						radius: 2,
-						states: {
-							hover: {
-								enabled: true
-							}
+			}
+		},
+		legend: {
+			align: 'left',
+			verticalAlign: 'top',
+			layout: 'vertical',
+			borderColor:'#999999',
+			borderRadius:5,
+			borderWidth:0.5,
+			x: 50,
+			y: 50,
+			floating: true
+		},
+		tooltip: {
+			pointFormat: '{series.name}: <b>{point.y:,.0f}</b>'
+		},
+		plotOptions: {
+			area: {
+				pointStart: 1940,
+				marker: {
+					enabled: false,
+					symbol: 'circle',
+					radius: 2,
+					states: {
+						hover: {
+							enabled: true
 						}
 					}
 				}
-			},
-			series: [
-			{
-				name: 'Consumed [Wh]',
-				color: 'rgba(165,0,0,0.5)',
-				//data: [last_24_c_Wh]
-				data: (function () {
-					var data = [];
-					for (var i = 0; i < last_24_ts.length; i++) {
-							var point = { 
-								x: last_24_ts[i], 
-								y: last_24_c_Wh[i]
-							}
+			}
+		},
+		series: [
+		{
+			name: 'Consumed [Wh]',
+			color: 'rgba(165,0,0,0.5)',
+			//data: [last_24_c_Wh]
+			data: (function () {
+				var data = [];
+				for (var i = 0; i < last_24_ts.length; i++) {
+						var point = { 
+							x: last_24_ts[i], 
+							y: last_24_c_Wh[i]
+						}
 
-							//console.log("Data point " + JSON.stringify(point))
-							data.push(point);
-					}
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
 
-					return data;
-				}())
-			},
-			{
-				name: 'Produced [Wh]',
-				color: 'rgba(0,165,0,0.5)',
-				//data: [last_24_c_Wh]
-				data: (function () {
-					var data = [];
-					for (var i = 0; i < last_24_ts.length; i++) {
-							var point = { 
-								x: last_24_ts[i], 
-								y: last_24_p_Wh[i]
-							}
+				return data;
+			}())
+		},
+		{
+			name: 'Produced [Wh]',
+			color: 'rgba(0,165,0,0.5)',
+			//data: [last_24_c_Wh]
+			data: (function () {
+				var data = [];
+				for (var i = 0; i < last_24_ts.length; i++) {
+						var point = { 
+							x: last_24_ts[i], 
+							y: last_24_p_Wh[i]
+						}
 
-							//console.log("Data point " + JSON.stringify(point))
-							data.push(point);
-					}
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
 
-					return data;
-				}())
-			},
-			{
-				name: 'Auto-consumed [Wh]',
-				color: 'rgba(0,165,0,0.8)',
-				//data: [last_24_c_Wh]
-				data: (function () {
-					var data = [];
-					for (var i = 0; i < last_24_ts.length; i++) {
-							var point = { 
-								x: last_24_ts[i], 
-								y: last_24_a_Wh[i]
-							}
+				return data;
+			}())
+		},
+		{
+			name: 'Auto-consumed [Wh]',
+			color: 'rgba(0,165,0,0.8)',
+			//data: [last_24_c_Wh]
+			data: (function () {
+				var data = [];
+				for (var i = 0; i < last_24_ts.length; i++) {
+						var point = { 
+							x: last_24_ts[i], 
+							y: last_24_a_Wh[i]
+						}
 
-							//console.log("Data point " + JSON.stringify(point))
-							data.push(point);
-					}
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
 
-					return data;
-				}())
-			},
-			{
-				name: 'Sold [Wh]',
-				color: '#ffd200',
-				//data: [last_24_c_Wh]
-				data: (function () {
-					var data = [];
-					for (var i = 0; i < last_24_ts.length; i++) {
-							var point = { 
-								x: last_24_ts[i], 
-								y: last_24_s_Wh[i]
-							}
+				return data;
+			}())
+		},
+		{
+			name: 'Sold [Wh]',
+			color: '#ffd200',
+			//data: [last_24_c_Wh]
+			data: (function () {
+				var data = [];
+				for (var i = 0; i < last_24_ts.length; i++) {
+						var point = { 
+							x: last_24_ts[i], 
+							y: last_24_s_Wh[i]
+						}
 
-							//console.log("Data point " + JSON.stringify(point))
-							data.push(point);
-					}
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
 
-					return data;
-				}())
-			},
-			{
-				name: 'Bought [Wh]',
-				color: 'rgba(165,0,0,0.8)',
-				data: (function () {
-					var data = [];
-					for (var i = 0; i < last_24_ts.length; i++) {
-							var point = { 
-								x: last_24_ts[i], 
-								y: last_24_b_Wh[i]
-							}
+				return data;
+			}())
+		},
+		{
+			name: 'Bought [Wh]',
+			color: 'rgba(165,0,0,0.8)',
+			data: (function () {
+				var data = [];
+				for (var i = 0; i < last_24_ts.length; i++) {
+						var point = { 
+							x: last_24_ts[i], 
+							y: last_24_b_Wh[i]
+						}
 
-							//console.log("Data point " + JSON.stringify(point))
-							data.push(point);
-					}
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
 
-					return data;
-				}())
-			}] 
-		});
-	Highcharts.setOptions({
-		global: {
-			useUTC: false
-		}
+				return data;
+			}())
+		}] 
 	});
 }
 
 function load_5mins_chart() {
-	Highcharts.chart('top_right', {
+	Highcharts.chart('five_mins', {
 		chart: {
 			type: 'areaspline',
 			animation: Highcharts.svg, // don't animate in old IE
@@ -292,7 +293,7 @@ function load_daily_chart() {
 	    yAxis: {
 	        min: 0,
 	        title: {
-	            text: '[KWh]',
+	            text: '[Wh]',
 	           
 	        },
 	        labels: {
@@ -300,7 +301,7 @@ function load_daily_chart() {
 	        }
 	    },
 	    tooltip: {
-	        valueSuffix: ' millions'
+	        valueSuffix: '[Wh]'
 	    },
 	    plotOptions: {
 	        bar: {
@@ -434,7 +435,7 @@ Highcharts.chart('gauge_production',
 	        plotBackgroundImage: null,
 	        plotBorderWidth: 0,
 	        plotShadow: false,
-	        height : 250
+	        height : 300
 	    },
 	    credits: {
 	      enabled: false
@@ -536,7 +537,7 @@ Highcharts.chart('gauge_consumption',
 	        plotBackgroundImage: null,
 	        plotBorderWidth: 0,
 	        plotShadow: false,
-	        height : 250
+	        height : 300
 	    },
 	    credits: {
 	      enabled: false

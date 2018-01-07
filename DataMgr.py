@@ -6,6 +6,7 @@ import random
 import schedule
 import Adafruit_ADS1x15
 from threading import Timer
+from aurorapy.client import AuroraError, AuroraTCPClient, AuroraSerialClient
 
 def now():
 	return datetime.datetime.now()
@@ -40,14 +41,20 @@ class DataMgr:
 		self.aggregate_interval_s = aggregate_interval_s
 		self.period_sample_s = period_sample_s
 		self.adc = Adafruit_ADS1x15.ADS1115()
+		self.inverter = AuroraSerialClient(port='/dev/ttyUSB0', address=2, 
+			baudrate=19200, data_bits=8, parity='N', stop_bits=1, timeout=0.1, tries=3)
+		try:
+			self.inverter.connect()
+		except AuroraError as e:
+			self.log(str(e))
 		Timer(self.period_check_s, self.check_to_aggregate_timeout, ()).start()
-		Timer(self.period_sample_s, self.sample_consumption, ()).start()
+		Timer(self.period_sample_s, self.sample_cW_pW, ()).start()
 		schedule.every().day.at("00:00").do(self.daily_aggregate)
-	
+
 	def log(self, logstr):
 		print str(now()) + "\t| " + logstr
 
-	def sample_consumption(self):
+	def sample_cW_pW(self):
 		# Note you can change the I2C address from its default (0x48), and/or the I2C
 		# bus by passing in these optional parameters:
 		#adc = Adafruit_ADS1x15.ADS1015(address=0x49, busnum=1)
@@ -64,8 +71,13 @@ class DataMgr:
 		GAIN = 1
 		V = max(0, self.adc.read_adc(0, gain=GAIN) * 124.77 / 1000000.0)
 		c_W = int(V / 0.12 * 580)
-		self.set(c_W=c_W)
-		Timer(self.period_sample_s, self.sample_consumption, ()).start()
+		p_W = 0
+		try:
+			p_W = int(self.inverter.measure(3, global_measure=True))
+		except AuroraError as e:
+			self.log(str(e))
+		self.set(p_W, c_W)
+		Timer(self.period_sample_s, self.sample_cW_pW, ()).start()
 
 	def production_blink(self):
 		# Just register this API on rising edge and you're done following here
@@ -79,6 +91,7 @@ class DataMgr:
 		if (_now - self.lastaggregate).seconds > self.aggregate_interval_s:
 			self.lastaggregate = _now
 			self.aggregate_store()
+		schedule.run_pending()
 		Timer(self.period_check_s, self.check_to_aggregate_timeout, ()).start()
 	
 	def aggregate_store(self):
@@ -92,7 +105,7 @@ class DataMgr:
 		self.reset_aggregate()
 
 	def daily_aggregate(self):
-		print "Aggregating daily data"
+		self.log("Aggregating daily data")
 		aggregate_len = self.r.llen('aggregate_ts_ms_since_epoch')
 		daily_p_Wh = 0
 		daily_c_Wh = 0
@@ -116,11 +129,11 @@ class DataMgr:
 		epoch_ms = float(self.r.lindex('aggregate_ts_ms_since_epoch', 0))
 		while is_more_than_24h_ahead(epoch_ms):
 			self.r.lpop('aggregate_ts_ms_since_epoch')
-			self.r.lpop('daily_p_Wh')
-			self.r.lpop('daily_c_Wh')
-			self.r.lpop('daily_a_Wh')
-			self.r.lpop('daily_s_Wh')
-			self.r.lpop('daily_b_Wh')
+			self.r.lpop('p_Wh')
+			self.r.lpop('c_Wh')
+			self.r.lpop('a_Wh')
+			self.r.lpop('s_Wh')
+			self.r.lpop('b_Wh')
 			epoch_ms = float(self.r.lindex('aggregate_ts_ms_since_epoch', 0))
 
 

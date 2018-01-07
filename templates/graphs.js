@@ -280,7 +280,7 @@ function load_5mins_chart() {
 function load_daily_chart() {
 	Highcharts.chart('daily_energy', {
 	    chart: {
-	        type: 'column',
+	        type: 'areaspline',
 	        height:250
 	    },
 	    title: {
@@ -304,10 +304,9 @@ function load_daily_chart() {
 	        valueSuffix: '[Wh]'
 	    },
 	    plotOptions: {
-	        bar: {
-	            dataLabels: {
-	                enabled: true
-	            }
+	 		areaspline: {
+	            stacking: 'normal',
+	            fillOpacity : 0.4	
 	        }
 	    },
 	    credits: {
@@ -328,54 +327,6 @@ function load_daily_chart() {
 	        enabled: false
 	    },
 	    series: [{
-	        name: 'Produced [Wh]',
-	        color: 'rgba(0,165,0,0.5)',
-	        pointPlacement: 0.15,
-	        pointPadding: 0.3,
-	        data: (function () {
-	        	var data = [];
-				daily_ts = daily['daily_epoch_ms']
-				daily_p_Wh = daily['daily_p_Wh']
-				daily_c_Wh = daily['daily_c_Wh']
-				daily_a_Wh = daily['daily_a_Wh']
-				daily_s_Wh = daily['daily_s_Wh']
-				daily_b_Wh = daily['daily_b_Wh']
-				for (var i = 0; i < daily_ts.length; i++) {
-						var point = { 
-							x: daily_ts[i], 
-							y: daily_p_Wh[i]
-						}
-
-						//console.log("Data point " + JSON.stringify(point))
-						data.push(point);
-				}
-
-				return data;
-			}())
-	    }, {
-	        name: 'Auto-consumed [Wh]',
-	        color: 'rgba(0,165,0,0.8)',
-	        data: (function () {
-	        	var data = [];
-				daily_ts = daily['daily_epoch_ms']
-				daily_p_Wh = daily['daily_p_Wh']
-				daily_c_Wh = daily['daily_c_Wh']
-				daily_a_Wh = daily['daily_a_Wh']
-				daily_s_Wh = daily['daily_s_Wh']
-				daily_b_Wh = daily['daily_b_Wh']
-				for (var i = 0; i < daily_ts.length; i++) {
-						var point = { 
-							x: daily_ts[i], 
-							y: daily_a_Wh[i]
-						}
-
-						//console.log("Data point " + JSON.stringify(point))
-						data.push(point);
-				}
-
-				return data;
-			}())
-	    }, {
 	        name: 'Consumed [Wh]',
 	        color: 'rgba(165,0,0,0.5)',
 	        pointPadding: 0.3,
@@ -415,6 +366,54 @@ function load_daily_chart() {
 						var point = { 
 							x: daily_ts[i], 
 							y: daily_b_Wh[i]
+						}
+
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
+
+				return data;
+			}())
+	    },{
+	        name: 'Produced [Wh]',
+	        color: 'rgba(0,165,0,0.5)',
+	        pointPlacement: 0.15,
+	        pointPadding: 0.3,
+	        data: (function () {
+	        	var data = [];
+				daily_ts = daily['daily_epoch_ms']
+				daily_p_Wh = daily['daily_p_Wh']
+				daily_c_Wh = daily['daily_c_Wh']
+				daily_a_Wh = daily['daily_a_Wh']
+				daily_s_Wh = daily['daily_s_Wh']
+				daily_b_Wh = daily['daily_b_Wh']
+				for (var i = 0; i < daily_ts.length; i++) {
+						var point = { 
+							x: daily_ts[i], 
+							y: daily_p_Wh[i]
+						}
+
+						//console.log("Data point " + JSON.stringify(point))
+						data.push(point);
+				}
+
+				return data;
+			}())
+	    }, {
+	        name: 'Auto-consumed [Wh]',
+	        color: 'rgba(0,165,0,0.8)',
+	        data: (function () {
+	        	var data = [];
+				daily_ts = daily['daily_epoch_ms']
+				daily_p_Wh = daily['daily_p_Wh']
+				daily_c_Wh = daily['daily_c_Wh']
+				daily_a_Wh = daily['daily_a_Wh']
+				daily_s_Wh = daily['daily_s_Wh']
+				daily_b_Wh = daily['daily_b_Wh']
+				for (var i = 0; i < daily_ts.length; i++) {
+						var point = { 
+							x: daily_ts[i], 
+							y: daily_a_Wh[i]
 						}
 
 						//console.log("Data point " + JSON.stringify(point))

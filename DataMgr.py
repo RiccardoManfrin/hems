@@ -75,7 +75,8 @@ class DataMgr:
 		try:
 			p_W = int(self.inverter.measure(3, global_measure=True))
 		except AuroraError as e:
-			self.log(str(e))
+			if str(e) != "Inverter is shutdown":
+				self.log(str(e))
 		self.set(p_W, c_W)
 		Timer(self.period_sample_s, self.sample_cW_pW, ()).start()
 

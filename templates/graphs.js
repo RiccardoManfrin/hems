@@ -38,7 +38,7 @@ function load_last_day_chart() {
 		},
 		yAxis: {
 			title: {
-				text: '[W]'
+				text: '[Wh]'
 			},
 			labels: {
 				formatter: function () {
@@ -61,6 +61,9 @@ function load_last_day_chart() {
 			pointFormat: '{series.name}: <b>{point.y:,.0f}</b>'
 		},
 		plotOptions: {
+			series: {
+				groupPadding: 0.07
+			},
 			area: {
 				pointStart: 1940,
 				marker: {
@@ -305,7 +308,7 @@ function load_daily_chart() {
 	    },
 	    plotOptions: {
 	 		areaspline: {
-	            stacking: 'normal',
+	            stacking: null,
 	            fillOpacity : 0.4	
 	        }
 	    },

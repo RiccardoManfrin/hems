@@ -98,6 +98,24 @@ function load_last_day_chart() {
 				return data;
 			}())
 		},
+                {
+                        name: 'Bought [Wh]',
+                        color: 'rgba(165,0,0,0.8)',
+                        data: (function () {
+                                var data = [];
+                                for (var i = 0; i < last_24_ts.length; i++) {
+                                                var point = {
+                                                        x: last_24_ts[i],
+                                                        y: last_24_b_Wh[i]
+                                                }
+
+                                                //console.log("Data point " + JSON.stringify(point))
+                                                data.push(point);
+                                }
+
+                                return data;
+                        }())
+                },
 		{
 			name: 'Produced [Wh]',
 			color: 'rgba(0,165,0,0.5)',
@@ -146,24 +164,6 @@ function load_last_day_chart() {
 						var point = { 
 							x: last_24_ts[i], 
 							y: last_24_s_Wh[i]
-						}
-
-						//console.log("Data point " + JSON.stringify(point))
-						data.push(point);
-				}
-
-				return data;
-			}())
-		},
-		{
-			name: 'Bought [Wh]',
-			color: 'rgba(165,0,0,0.8)',
-			data: (function () {
-				var data = [];
-				for (var i = 0; i < last_24_ts.length; i++) {
-						var point = { 
-							x: last_24_ts[i], 
-							y: last_24_b_Wh[i]
 						}
 
 						//console.log("Data point " + JSON.stringify(point))

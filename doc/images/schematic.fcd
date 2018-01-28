@@ -1,0 +1,30 @@
+[FIDOCAD]
+MC 20 35 3 0 ey_libraries.indind4
+MC 110 20 1 0 ey_libraries.pasres0
+MC 95 20 0 0 ey_libraries.pascap1
+MC 40 20 0 0 ey_libraries.diddid0
+MC 60 20 2 0 ey_libraries.diddid0
+MC 45 30 2 0 ey_libraries.diddid0
+MC 55 30 0 0 ey_libraries.diddid0
+LI 35 20 35 30 0
+LI 20 25 35 25 0
+LI 20 40 70 40 0
+LI 70 40 70 25 0
+LI 70 25 65 25 0
+LI 65 25 65 20 0
+LI 65 25 65 30 0
+LI 50 30 50 35 0
+LI 50 35 130 35 0
+LI 50 20 50 15 0
+LI 50 15 130 15 0
+LI 95 30 95 35 0
+LI 110 30 110 35 0
+SA 110 15 0
+SA 95 15 0
+SA 95 35 0
+SA 110 35 0
+SA 50 20 0
+SA 35 25 0
+SA 50 30 0
+SA 65 25 0
+RV 160 25 130 10 0

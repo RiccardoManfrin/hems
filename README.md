@@ -38,3 +38,6 @@ just perfect:
 Edit file /etc/rc.local (or anything that allows you to run software at machine bootstrap):
 
 	uwsgi --plugin python --http-socket=0.0.0.0:8000 --enable-threads --manage-script-name --mount /=hems:app
+
+Web app screenshot:
+![Screenshot](doc/images/screenshot.png)

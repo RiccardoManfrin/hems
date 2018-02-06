@@ -103,6 +103,7 @@ class DataMgr:
 		self.r.rpush('s_Wh', self.s_Wh)
 		self.r.rpush('b_Wh', self.b_Wh)
 		self.reset_aggregate()
+		self.truncate_older_than_24h()
 
 	def daily_aggregate(self):
 		self.log("Aggregating daily data")
@@ -125,7 +126,9 @@ class DataMgr:
 		self.r.rpush('daily_a_Wh', daily_a_Wh)
 		self.r.rpush('daily_s_Wh', daily_s_Wh)
 		self.r.rpush('daily_b_Wh', daily_b_Wh)
+		self.truncate_older_than_24h()
 
+	def truncate_older_than_24h():
 		epoch_ms = float(self.r.lindex('aggregate_ts_ms_since_epoch', 0))
 		while is_more_than_24h_ahead(epoch_ms):
 			self.r.lpop('aggregate_ts_ms_since_epoch')

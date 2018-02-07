@@ -50,6 +50,7 @@ class DataMgr:
 		Timer(self.period_check_s, self.check_to_aggregate_timeout, ()).start()
 		Timer(self.period_sample_s, self.sample_cW_pW, ()).start()
 		schedule.every().day.at("00:00").do(self.daily_aggregate)
+		self.truncate_older_than_24h()
 
 	def log(self, logstr):
 		print str(now()) + "\t| " + logstr
@@ -128,7 +129,7 @@ class DataMgr:
 		self.r.rpush('daily_b_Wh', daily_b_Wh)
 		self.truncate_older_than_24h()
 
-	def truncate_older_than_24h():
+	def truncate_older_than_24h(self):
 		epoch_ms = float(self.r.lindex('aggregate_ts_ms_since_epoch', 0))
 		while is_more_than_24h_ahead(epoch_ms):
 			self.r.lpop('aggregate_ts_ms_since_epoch')

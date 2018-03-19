@@ -130,7 +130,10 @@ class DataMgr:
 		self.truncate_older_than_24h()
 
 	def truncate_older_than_24h(self):
-		epoch_ms = float(self.r.lindex('aggregate_ts_ms_since_epoch', 0))
+		a_ts = self.r.lindex('aggregate_ts_ms_since_epoch', 0)
+		if not a_ts:
+			return
+		epoch_ms = float(a_ts)
 		while is_more_than_24h_ahead(epoch_ms):
 			self.r.lpop('aggregate_ts_ms_since_epoch')
 			self.r.lpop('p_Wh')

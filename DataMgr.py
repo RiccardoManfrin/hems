@@ -48,14 +48,14 @@ class DataMgr:
 		except AuroraError as e:
 			self.log(str(e))
 		Timer(self.period_check_s, self.check_to_aggregate_timeout, ()).start()
-		Timer(self.period_sample_s, self.sample_cW_pW, ()).start()
+		Timer(self.period_sample_s, self.sample_cW_pW_Vgrid, ()).start()
 		schedule.every().day.at("00:00").do(self.daily_aggregate)
 		self.truncate_older_than_24h()
 
 	def log(self, logstr):
 		print str(now()) + "\t| " + logstr
 
-	def sample_cW_pW(self):
+	def sample_cW_pW_Vgrid(self):
 		# Note you can change the I2C address from its default (0x48), and/or the I2C
 		# bus by passing in these optional parameters:
 		#adc = Adafruit_ADS1x15.ADS1015(address=0x49, busnum=1)
@@ -73,12 +73,14 @@ class DataMgr:
 		V = max(0, self.adc.read_adc(0, gain=GAIN) * 124.77 / 1000000.0)
 		c_W = int(V / 0.12 * 580)
 		p_W = 0
+		V_grid = 0
 		try:
 			p_W = int(self.inverter.measure(3, global_measure=True))
+			V_grid = int(self.inverter.measure(1, global_measure=True))
 		except AuroraError as e:
 			pass
-		self.set(p_W, c_W)
-		Timer(self.period_sample_s, self.sample_cW_pW, ()).start()
+		self.set(p_W, c_W, V_grid)
+		Timer(self.period_sample_s, self.sample_cW_pW_Vgrid, ()).start()
 
 	def production_blink(self):
 		# Just register this API on rising edge and you're done following here
@@ -148,18 +150,23 @@ class DataMgr:
 		self.r.rpush('ts_ms_since_epoch', dtepoch_ms(self.lastupdate))
 		self.r.rpush('p_W', self.now_p_W)
 		self.r.rpush('c_W', self.now_c_W)
+		self.r.rpush('V_grid', self.now_V_grid)
+
 		while self.r.llen('ts_ms_since_epoch') > 300:
 			self.r.lpop('ts_ms_since_epoch')
 		while self.r.llen('p_W') > 300:
 			self.r.lpop('p_W')
 		while self.r.llen('c_W') > 300:
 			self.r.lpop('c_W')
+		while self.r.llen('V_grid') > 300:
+			self.r.lpop('V_grid')
  
 	def get_latest_live_data(self):
 		res = { 
 				'ts_ms_since_epoch' : map(int, self.r.lrange('ts_ms_since_epoch', 0, -1)) ,
 				'p_W' : map(float, self.r.lrange('p_W', 0, -1)) ,
 				'c_W' : map(float, self.r.lrange('c_W', 0, -1)) ,
+				'V_grid' : map(float, self.r.lrange('V_grid', 0, -1)) ,
 				}
 		return res
 
@@ -192,6 +199,9 @@ class DataMgr:
 	def get_consumption_W(self):
 		return self.now_c_W
 
+	def get_V_grid(self):
+		return self.now_V_grid
+
 	def get_day_production_Wh(self):
 		return self.p_Wh
 
@@ -204,13 +214,16 @@ class DataMgr:
 	def get_day_bought_Wh(self):
 		return self.b_Wh
 
-	def set(self, p_W=-1, c_W=-1):
+	def set(self, p_W=-1, c_W=-1, V_grid=-1):
 
 		if p_W == -1:
 			p_W = self.now_p_W
 
 		if c_W == -1:
 			c_W = self.now_c_W
+
+		if V_grid == -1:
+			V_grid = self.now_V_grid
 
 		elapsed = ((now() - self.lastupdate).total_seconds())
 		a_W = min(p_W, c_W) #autoconsumed
@@ -223,6 +236,7 @@ class DataMgr:
 		self.b_Wh = self.b_Wh + (b_W * elapsed / 3600) #bought [Wh]
 		self.now_p_W = p_W
 		self.now_c_W = c_W
+		self.now_V_grid = V_grid
 		self.lastupdate = now() 
 		self.live_store()
 

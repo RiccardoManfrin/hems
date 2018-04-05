@@ -35,6 +35,11 @@ def data_consumption_live():
 	global datamgr
 	return jsonify(datamgr.get_consumption_W())
 
+@app.route('/data/vgrid/live')
+def data_vgrid_live():
+        global datamgr
+        return jsonify(datamgr.get_V_grid())
+
 @app.route('/data/latest_live_data')
 def latest_live_data():
 	global datamgr

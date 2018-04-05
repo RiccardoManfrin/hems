@@ -10,6 +10,7 @@ var daily = {};
 
 var consumptiony = 0;
 var productiony = 0
+var vgridy = 0
 
 Highcharts.setOptions({
 	global: {
@@ -181,20 +182,23 @@ function load_5mins_chart() {
 		chart: {
 			type: 'areaspline',
 			animation: Highcharts.svg, // don't animate in old IE
-			marginRight: 10,
+			marginRight: 60,
 			height : 300,
 			events: {
 				load: function () {
 					
 					var consumption = this.series[0];
 					var production = this.series[1];
+					var vgrid = this.series[2];
 					setInterval(function () {
 						$.getJSON("/data/consumption/live", function(data){consumptiony = data});
 						$.getJSON("/data/production/live", function(data){productiony = data});
+						$.getJSON("/data/vgrid/live", function(data){vgridy = data});
 						var x = (new Date()).getTime();
 							
 						consumption.addPoint([x, consumptiony], true, true);
-						production.addPoint([x, productiony], true, true);	
+						production.addPoint([x, productiony], true, true);
+						vgrid.addPoint([x, vgridy], true, true);
 					}, 1000);
 				}
 			}
@@ -213,7 +217,7 @@ function load_5mins_chart() {
 			tickPixelInterval: 150,
 			gridLineWidth: 1
 		},
-		yAxis: {
+		yAxis: [{
 			title: {
 				text: '[W]'
 			},
@@ -222,7 +226,23 @@ function load_5mins_chart() {
 				width: 0.5,
 				color: '#808080'
 			}]
-		},
+		},{
+			title: {
+                                text: '[V]'
+                        },
+			plotLines: [{
+                                value: 0,
+                                width: 0.5,
+                                color: '#808080'
+                        }],
+			//labels: {
+			//	format: '{value} V',
+			//	style: {
+			//                color: Highcharts.getOptions().colors[0]
+            		//	}
+			//},
+                        opposite: true
+		}],
 		tooltip: {
 			formatter: function () {
 				return '<b>' + this.series.name + '</b><br/>' +
@@ -276,7 +296,27 @@ function load_5mins_chart() {
 
 				return data;
 			}())
-		}]
+		},
+		{
+                        name: 'Grid [V]',
+                        color: '#FF00FF',
+			fillOpacity: 0,
+			yAxis: 1,
+                        data: (function () {
+                                var data = [];
+                                for (var i = 0; i < five_mins_initial_data['ts_ms_since_epoch'].length; i++) {
+                                                var point = {
+                                                        x: five_mins_initial_data['ts_ms_since_epoch'][i],
+                                                        y: five_mins_initial_data['V_grid'][i]
+                                                }
+
+                                                //console.log("Data point " + JSON.stringify(point))
+                                                data.push(point);
+                                }
+
+                                return data;
+                        }())
+                }]
 	});
 }
 

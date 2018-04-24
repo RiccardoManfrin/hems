@@ -235,6 +235,7 @@ function load_5mins_chart() {
                                 width: 0.5,
                                 color: '#808080'
                         }],
+			min: 200,
 			//labels: {
 			//	format: '{value} V',
 			//	style: {

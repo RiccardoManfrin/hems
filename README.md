@@ -34,6 +34,7 @@ since it's not meant for production. Instead, WSGI server is
 just perfect:
 
     apt-get install uwsgi
+    apt-get install uwsgi-plugin-python
 
 Edit file /etc/rc.local (or anything that allows you to run software at machine bootstrap):
 

@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 
 from aurorapy.client import AuroraError, AuroraTCPClient, AuroraSerialClient
 

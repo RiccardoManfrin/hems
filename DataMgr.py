@@ -40,7 +40,7 @@ class DataMgr:
 		self.period_check_s = 1
 		self.aggregate_interval_s = aggregate_interval_s
 		self.period_sample_s = period_sample_s
-		self.adc = Adafruit_ADS1x15.ADS1115()
+		self.adc = Adafruit_ADS1x15.ADS1115(busnum=0)
 		self.inverter = AuroraSerialClient(port='/dev/ttyUSB0', address=2, 
 			baudrate=19200, data_bits=8, parity='N', stop_bits=1, timeout=0.1, tries=3)
 		try:
@@ -70,7 +70,7 @@ class DataMgr:
 		#  -  16 = +/-0.256V
 		# See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
 		GAIN = 1
-		V = max(0, self.adc.read_adc(0, gain=GAIN) * 124.77 / 1000000.0)
+		V = max(0, self.adc.read_adc(0, gain=GAIN) * 100 / 1000000.0)
 		c_W = int(V / 0.12 * 580)
 		p_W = 0
 		V_grid = 0
@@ -143,7 +143,10 @@ class DataMgr:
 			self.r.lpop('a_Wh')
 			self.r.lpop('s_Wh')
 			self.r.lpop('b_Wh')
-			epoch_ms = float(self.r.lindex('aggregate_ts_ms_since_epoch', 0))
+                        oldest_aggregate_ts = self.r.lindex('aggregate_ts_ms_since_epoch', 0)
+                        if not oldest_aggregate_ts:
+                            break
+			epoch_ms = float(oldest_aggregate_ts)
 
 
 	def live_store(self):

@@ -246,6 +246,7 @@ class DataMgr:
 	def reset(self):
 		self.now_p_W = 0
 		self.now_c_W = 0
+                self.now_V_grid = 0
 		self.lastupdate = now()
 		self.reset_aggregate()
 

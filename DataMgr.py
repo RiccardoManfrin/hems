@@ -143,9 +143,9 @@ class DataMgr:
 			self.r.lpop('a_Wh')
 			self.r.lpop('s_Wh')
 			self.r.lpop('b_Wh')
-                        oldest_aggregate_ts = self.r.lindex('aggregate_ts_ms_since_epoch', 0)
-                        if not oldest_aggregate_ts:
-                            break
+			oldest_aggregate_ts = self.r.lindex('aggregate_ts_ms_since_epoch', 0)
+			if not oldest_aggregate_ts:
+				break
 			epoch_ms = float(oldest_aggregate_ts)
 
 

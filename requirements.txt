@@ -1,7 +1,7 @@
 Adafruit-ADS1x15==1.0.2
 Adafruit-GPIO==1.0.3
 Adafruit-PureIO==0.2.3
-aurorapy==0.2.4
+aurorapy==0.2.5
 Flask==1.0.2
 redis==2.10.6
 RPi.GPIO==0.6.3

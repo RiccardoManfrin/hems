@@ -40,7 +40,7 @@ class DataMgr:
 		self.period_check_s = 1
 		self.aggregate_interval_s = aggregate_interval_s
 		self.period_sample_s = period_sample_s
-		self.adc = Adafruit_ADS1x15.ADS1115(busnum=1)
+		self.adc = Adafruit_ADS1x15.ADS1115(busnum=0)
 		self.inverter = AuroraSerialClient(port='/dev/ttyUSB0', address=2, 
 			baudrate=19200, data_bits=8, parity='N', stop_bits=1, timeout=0.1, tries=3)
 		try:
